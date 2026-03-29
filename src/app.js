@@ -23,8 +23,24 @@ import { notFound, errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
 
-// ✅ DB connect (important for serverless)
-connectDB();
+// ✅ Root route (VERY IMPORTANT)
+app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+});
+
+// ✅ DB connect (safe for serverless)
+let isConnected = false;
+const connectDBOnce = async () => {
+    if (!isConnected) {
+        await connectDB();
+        isConnected = true;
+    }
+};
+
+app.use(async (req, res, next) => {
+    await connectDBOnce();
+    next();
+});
 
 // ── Security middleware ──
 app.use(helmet());
