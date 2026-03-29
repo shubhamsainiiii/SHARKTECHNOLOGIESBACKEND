@@ -5,7 +5,7 @@ import { Stat, TeamMember } from '../models/misc.models.js';
 import Testimonial from '../models/testimonial.model.js';
 import { sendSuccess } from '../utils/response.js';
 
-// GET /api/dashboard/stats
+
 export const getDashboardStats = async (req, res, next) => {
     try {
         const [projects, services, testimonials, blogs, stats, team] = await Promise.all([
