@@ -45,23 +45,12 @@ app.use(async (req, res, next) => {
 // ── Security middleware ──
 app.use(helmet());
 const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    process.env.ADMIN_URL,
+    "https://shark-technologies.vercel.app",
+    "https://sharktechnologiesadmin.vercel.app"
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        console.log("Request Origin:", origin); // debug
-
-        // allow requests with no origin (Postman / mobile apps)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        } else {
-            return callback(new Error("CORS blocked: " + origin));
-        }
-    },
+    origin: allowedOrigins,
     credentials: true,
 }));
 
