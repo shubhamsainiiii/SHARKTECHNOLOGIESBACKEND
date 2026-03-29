@@ -44,11 +44,24 @@ app.use(async (req, res, next) => {
 
 // ── Security middleware ──
 app.use(helmet());
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    process.env.ADMIN_URL,
+];
+
 app.use(cors({
-    origin: [
-        process.env.FRONTEND_URL,
-        process.env.ADMIN_URL,
-    ],
+    origin: function (origin, callback) {
+        console.log("Request Origin:", origin); // debug
+
+        // allow requests with no origin (Postman / mobile apps)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error("CORS blocked: " + origin));
+        }
+    },
     credentials: true,
 }));
 
