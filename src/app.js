@@ -45,14 +45,28 @@ app.use(async (req, res, next) => {
 // ── Security middleware ──
 app.use(helmet());
 const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
     "https://shark-technologies.vercel.app",
     "https://sharktechnologiesadmin.vercel.app"
 ];
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        console.log("Origin:", origin);
+
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error("CORS blocked: " + origin));
+        }
+    },
     credentials: true,
 }));
+
+app.use(cors());
 
 // ── Rate limiting ──
 const limiter = rateLimit({
